@@ -2,9 +2,13 @@ package com.plcoding.testingcourse.shopping.domain
 
 import assertk.assertFailure
 import assertk.assertThat
+import assertk.assertions.contains
+import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import com.plcoding.testingcourse.core.domain.Product
 import com.plcoding.testingcourse.core.domain.ShoppingCart
+import com.plcoding.testingcourse.core.data.ShoppingCartCacheFake
+import com.plcoding.testingcourseexamples.part1.domain.ShoppingCartCache
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
@@ -15,9 +19,12 @@ internal class ShoppingCartTest {
 
     private lateinit var cart: ShoppingCart
 
+    private lateinit var cacheFake: ShoppingCartCache
+
     @BeforeEach
     fun setUp() {
-        cart = ShoppingCart()
+        cacheFake = ShoppingCartCacheFake()
+        cart = ShoppingCart(cacheFake)
     }
 
     @ParameterizedTest
@@ -71,5 +78,24 @@ internal class ShoppingCartTest {
         val totalPriceSum = cart.getTotalCost()
 
         assertThat(totalPriceSum).isEqualTo(0.0)
+    }
+
+    @Test
+    fun `Test products are saved in cache`() {
+        val product = Product(id = 1, name = "Ice cream", price = 5.0)
+
+        // We should not manipulate by ourself but let the class to interact with the fake
+        // in this case we let the cart to "add" the products, instead of assigning the
+        //     cacheFake.saveCart()
+
+        //resume -> Alter the fake by ourself     cacheFake.saveCart() BAD
+        //resume -> Make the class interact by itself with the fake   cart.addProduct() GOOD
+
+        cart.addProduct(product, 2)
+
+        val productsFromCache = cacheFake.loadCart()
+
+        assertThat(productsFromCache).hasSize(2)
+        assertThat(productsFromCache).contains(product)
     }
 }
