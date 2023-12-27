@@ -67,17 +67,25 @@ class ProfileViewModelTest {
 
     @Test
     fun `Test loading state updates`() = runTest {
+        // using turbine we test the public final val state: StateFlow<ProfileState>
         viewModel.state.test {
+            // we wait to receive the emission from that flow and assert it's value
             val emission1 = awaitItem()
             assertThat(emission1.isLoading).isFalse()
+            // initially we don't have any loading emission
 
+            // we trigger the viewModel function that makes the loading to true
             viewModel.loadProfile()
 
+            // wait for next emission and assert
             val emission2 = awaitItem()
             assertThat(emission2.isLoading).isTrue()
 
             val emission3 = awaitItem()
             assertThat(emission3.isLoading).isFalse()
+
+            // last we expect that flow does not emmit any more events
+            expectNoEvents()
         }
     }
 }
