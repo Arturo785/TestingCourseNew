@@ -10,15 +10,22 @@ import org.junit.jupiter.api.Test
 
 class UserRepositoryImplTest {
 
+    // we are using the real Implementation
     private lateinit var repository: UserRepositoryImpl
     private lateinit var api: UserApiFake
 
+    // we setup a fake api and our repository to test
     @BeforeEach
     fun setUp() {
         api = UserApiFake()
         repository = UserRepositoryImpl(api)
     }
 
+    /**
+    * We use runBlocking to test since it's a suspend function, and we don't have to do nothing
+     * more because of the suspend keyword the compiler knows it should suspend and retake the work
+     * waiting automatically for it's result
+    * */
     @Test
     fun `Test getting profile`() = runBlocking {
         val profileResult = repository.getProfile("1")
