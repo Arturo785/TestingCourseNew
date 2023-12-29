@@ -16,10 +16,12 @@ import kotlinx.coroutines.flow.onEach
 class CountdownNotification(
     private val context: Context
 ) {
+    // Our manager
     private val notificationManager = context.getSystemService(
         Context.NOTIFICATION_SERVICE
     ) as NotificationManager
 
+    // the channel
     fun createNotificationChannel() {
         val channel = NotificationChannel(
             CHANNEL_ID,
@@ -29,8 +31,10 @@ class CountdownNotification(
         notificationManager.createNotificationChannel(channel)
     }
 
+    // the job to countdown and can be cancelable
     private var countdownJob: Job? = null
 
+    // a simple flow that counts in decrement second by second
     private fun countdownFlow(startSeconds: Int): Flow<Int> {
         return flow<Int> {
             var currentSeconds = startSeconds
@@ -41,11 +45,13 @@ class CountdownNotification(
         }
     }
 
+    // cancels previous countdown and starts a new one,
+    // on each emission of the flow updates the notification with the values
     fun startCountdown(seconds: Int) {
         countdownJob?.cancel()
         countdownJob = countdownFlow(seconds).onEach {
             showOrUpdateNotification(it)
-        }.launchIn(MainScope())
+        }.launchIn(MainScope()) // needed because onEach is not a terminal operator of the flow
     }
 
     private fun showOrUpdateNotification(time: Int) {

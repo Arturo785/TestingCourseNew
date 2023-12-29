@@ -22,8 +22,16 @@ class MainActivityTest {
     @get:Rule
     val composeRule = createAndroidComposeRule<MainActivity>()
 
-//    @get:Rule
-//    val grantPermissionRule = GrantPermissionRule.grant(Manifest.permission.RECORD_AUDIO)
+
+    /**
+     * This grants the permission immediately to the test, using this the permission dialog won't
+     * appear since acts like if the permission is already automatically granted
+     *
+     * Works for cases like when we want to test the functionality that needs the permission rather
+     * than testing the checks of the permissions
+     * */
+    //@get:Rule
+    //val grantPermissionRule = GrantPermissionRule.grant(Manifest.permission.RECORD_AUDIO)
 
 //    @get:Rule
 //    val intentsRule = IntentsRule()
@@ -43,8 +51,15 @@ class MainActivityTest {
 
     @Test
     fun testRecordAudioPermissionDenial_showsErrorDialog() {
+        // will trigger the permission request
         composeRule.onNodeWithText("Record").performClick()
 
+        // I think this part needs this dependencies
+        //    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.3.0-alpha04'
+        //    androidTestUtil 'androidx.test:orchestrator:1.4.2'
+
+        // Since the permission dialog is not part of the compose code we need this way
+        // to access the button and being able to click it
         val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         val dontAllowButton = device.findObject(UiSelector().textStartsWith("Don"))
         dontAllowButton.click()
@@ -52,6 +67,7 @@ class MainActivityTest {
         composeRule.onNodeWithText("Record").performClick()
         dontAllowButton.click()
 
+        // after several don't allow the text should appear
         composeRule.onNodeWithText("Can't record without permission").assertIsDisplayed()
     }
 }

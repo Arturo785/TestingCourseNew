@@ -32,8 +32,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // this is the notification code
         val notification = CountdownNotification(applicationContext)
         notification.startCountdown(5)
+        // end of notification code
         setContent {
             TestingCourseTheme {
                 // A surface container using the 'background' color from the theme
@@ -41,48 +43,48 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-//                    var showPermissionError by rememberSaveable {
-//                        mutableStateOf(false)
-//                    }
-//                    // PERMISSION REQUEST
-//                    val permissionLauncher = rememberLauncherForActivityResult(
-//                        contract = ActivityResultContracts.RequestPermission(),
-//                        onResult = { wasGranted ->
-//                            if (!wasGranted && !shouldShowRequestPermissionRationale(
-//                                    android.Manifest.permission.RECORD_AUDIO
-//                                )
-//                            ) {
-//                                showPermissionError = true
-//                            }
-//                        }
-//                    )
-//
-//                    Button(onClick = {
-//                        val hasPermission = ActivityCompat.checkSelfPermission(
-//                            applicationContext,
-//                            android.Manifest.permission.RECORD_AUDIO
-//                        ) == PackageManager.PERMISSION_GRANTED
-//
-//                        if (hasPermission) {
-//                            // Start recording...
-//                        } else {
-//                            permissionLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
-//                        }
-//                    }) {
-//                        Text(text = "Record")
-//                    }
-//                    if (showPermissionError) {
-//                        Dialog(onDismissRequest = {
-//                            showPermissionError = false
-//                        }) {
-//                            Text(
-//                                text = "Can't record without permission",
-//                                modifier = Modifier
-//                                    .background(Color.White, RoundedCornerShape(100))
-//                                    .padding(16.dp)
-//                            )
-//                        }
-//                    }
+                    var showPermissionError by rememberSaveable {
+                        mutableStateOf(false)
+                    }
+//                     PERMISSION REQUEST
+                    val permissionLauncher = rememberLauncherForActivityResult(
+                        contract = ActivityResultContracts.RequestPermission(),
+                        onResult = { wasGranted ->
+                            if (!wasGranted && !shouldShowRequestPermissionRationale(
+                                    android.Manifest.permission.RECORD_AUDIO
+                                )
+                            ) {
+                                showPermissionError = true
+                            }
+                        }
+                    )
+
+                    Button(onClick = {
+                        val hasPermission = ActivityCompat.checkSelfPermission(
+                            applicationContext,
+                            android.Manifest.permission.RECORD_AUDIO
+                        ) == PackageManager.PERMISSION_GRANTED
+
+                        if (hasPermission) {
+                             //Start recording...
+                        } else {
+                            permissionLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
+                        }
+                    }) {
+                        Text(text = "Record")
+                    }
+                    if (showPermissionError) {
+                        Dialog(onDismissRequest = {
+                            showPermissionError = false
+                        }) {
+                            Text(
+                                text = "Can't record without permission",
+                                modifier = Modifier
+                                    .background(Color.White, RoundedCornerShape(100))
+                                    .padding(16.dp)
+                            )
+                        }
+                    }
                 }
             }
         }

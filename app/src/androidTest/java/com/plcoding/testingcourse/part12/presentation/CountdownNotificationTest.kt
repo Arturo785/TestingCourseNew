@@ -28,27 +28,34 @@ class CountdownNotificationTest {
     @get:Rule
     val composeRule = createAndroidComposeRule<MainActivity>()
 
+    // we hardcode the permission to be granted right away for test purposes
     @get:Rule
     val grantPermissionRule = GrantPermissionRule.grant(Manifest.permission.POST_NOTIFICATIONS)
 
     @Test
     fun testNotificationCountdown() = runTest {
         runCurrent()
+        // we get our notificationManager
         val context = ApplicationProvider.getApplicationContext<Context>()
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE)
                 as NotificationManager
 
+        // this is like this because on the mainActivity the countdown is set from 5
         for(i in 5 downTo 1) {
+            // we wait until the first one is populated
             composeRule.waitUntil {
                 notificationManager.activeNotifications.isNotEmpty()
             }
+            // we check the id
             val notification = notificationManager.activeNotifications.first {
                 it.id == 1
             }.notification
 
+            // we check that is counting down as expected
             val contentText = notification.extras.getString(NotificationCompat.EXTRA_TEXT)
             assertThat(contentText).isEqualTo("Counting down: $i")
 
+            // and advance one second
             advanceTimeBy(1000L)
             runCurrent()
         }

@@ -17,6 +17,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        // this clearPackage is needed for the test of the permissions, since once we grant the permission
+        // to the APK it won't request it again, with this we clear the package and the test
+        // always needs to ask for the permission since there is no data cached
         testInstrumentationRunnerArguments clearPackageData: 'true'
         vectorDrawables {
             useSupportLibrary true
@@ -218,4 +221,6 @@ dependencies {
     androidTestImplementation "androidx.work:work-testing:2.8.1"
 
     debugImplementation "androidx.compose.ui:ui-test-manifest:1.4.3"
+
+    //
 }
