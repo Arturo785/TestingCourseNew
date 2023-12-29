@@ -25,6 +25,7 @@ class ProfileActivityTest {
 
     @Before
     fun setUp() {
+        // we setup our memory preferences
         preferences = ApplicationProvider.getApplicationContext<Context>()
             .getSharedPreferences("prefs", MODE_PRIVATE)
     }
@@ -36,13 +37,17 @@ class ProfileActivityTest {
 
     @Test
     fun testSaveScrollPosition() {
+        // scenario provides us with the ability to change and configure what happens in the activity
         val scenario = composeRule.activityRule.scenario
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         composeRule.onNode(hasScrollAction()).performScrollToIndex(50)
 
+        // onPause has to be performed before the on destroy so this way we test that the
+        // code it's doing it's part
         scenario.moveToState(Lifecycle.State.DESTROYED)
 
+        // we assert that the scroll position was saved
         val scrollPosition = preferences.getInt("scroll_position", -1)
         assertThat(scrollPosition).isEqualTo(50)
     }

@@ -50,6 +50,7 @@ class ProfileActivity : ComponentActivity() {
 
                     val lifecycleOwner = LocalLifecycleOwner.current
 
+                    // in here we save the scroll position when we reach the onPause on lifecycle
                     DisposableEffect(lifecycleOwner, firstVisibleItemIndex) {
                         val observer = LifecycleEventObserver { _, event ->
                             if(event == Lifecycle.Event.ON_PAUSE) {
@@ -58,6 +59,14 @@ class ProfileActivity : ComponentActivity() {
                                     .apply()
                             }
                         }
+                        // for any kind of addObserver we need to also remove it, that's why we use
+                        // DisposableEffect
+
+                        /**
+                        * A side effect of composition that must run for any new unique value
+                        * of key1 or key2 and must be reversed or cleaned up if key1 or key2 changes,
+                        *  or if the DisposableEffect leaves the composition.
+                        * */
                         lifecycleOwner.lifecycle.addObserver(observer)
 
                         onDispose {

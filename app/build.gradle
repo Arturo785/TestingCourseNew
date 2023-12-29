@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'de.mannodermaus.android-junit5' version "1.9.3.0"
     id "jacoco"
+    // we apply this new plugin
 }
 
 android {
@@ -22,6 +23,7 @@ android {
         }
     }
 
+    // we also create the debug build type to enable test coverage
     buildTypes {
         debug {
             testCoverageEnabled true
@@ -31,6 +33,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    // we apply this compile options
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_18
         targetCompatibility JavaVersion.VERSION_18
@@ -54,6 +57,7 @@ android {
     }
 }
 
+// our jacoco config start
 jacoco {
     toolVersion = "0.8.9"
 }
@@ -160,6 +164,7 @@ def setupAndroidReporting() {
         }
     }
 }
+// our jacoco config ending
 
 dependencies {
 
